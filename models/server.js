@@ -1,6 +1,6 @@
 const express = require('express')
 const cors = require('cors')
-
+const { dbConnection } = require('../database/config')
 class Server{
     constructor(){
         this.app = express()
@@ -11,11 +11,16 @@ class Server{
         this.setRoutes()
     }
     settings(){
-        this.app.use( cors() ) //CROSS ORIGIN ACCESS SETTINGS 
+        this.connectDB() //CONECTAR A LA BASE DE DATOS
+        this.app.use( cors() ) //CROSS ORIGIN ACCESS SETTINGS
+        this.app.use( express.json() ) //BODY PARSING TO JSON 
         this.app.use( express.static('public') ) //Carpeta de contenido estatico
     }
+    async connectDB(){
+        await dbConnection()
+    }
     setRoutes(){
-        this.app.use( '/api/users', require('../routes/users') )
+        this.app.use( '/usuarios', require('../routes/usuario') )
 
     }
     listen(){
